@@ -52,7 +52,6 @@ By default, outputs are written to `results/rna-atac/`:
 | :--- | :--- |
 | `result.h5ad` | Integrated AnnData and learned embeddings |
 | `params.json` | Effective model, input, optimization, and seed settings |
-| `params_method_manifest.json` | Embedding and evaluation roles |
 | `metrics.tsv` | Evaluation scores |
 
 ```python

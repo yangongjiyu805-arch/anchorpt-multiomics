@@ -20,7 +20,6 @@ Both trees contain a package named `anchorpt`. Set `ANCHORPT_SRC_DIR` to the sel
 | `ANCHORPT_INPUT_H5AD` | Empty; set explicitly | Training AnnData path |
 | `ANCHORPT_OUTPUT_H5AD` | `output.h5ad` | Integrated output |
 | `ANCHORPT_PARAMS_USED_JSON` | `params.json` | Effective parameter record |
-| `ANCHORPT_METHOD_MANIFEST_JSON` | Derived from parameter path | Method-role manifest |
 | `ANCHORPT_INPUT_LAYER` | `train_input` | Input layer; empty selects `.X` |
 | `ANCHORPT_MODALITY_KEY` | `modality` | Modality metadata column |
 | `ANCHORPT_STRICT_UNPAIRED` | `true` | Enforce absence of batch/cell-type supervision |
@@ -109,6 +108,6 @@ For three modalities, provide an assembled AnnData object with the same contract
 
 ## Effective records
 
-With `ANCHORPT_PARAMS_USED_JSON=results/run/params.json`, the derived manifest path is `results/run/params_method_manifest.json`. Optional checkpoint paths are controlled by `ANCHORPT_STAGE1_CKPT_PATH` and `ANCHORPT_STAGE2_CKPT_PATH`; they are unset by default.
+Set `ANCHORPT_PARAMS_USED_JSON=results/run/params.json` to record the effective settings. Optional checkpoint paths are controlled by `ANCHORPT_STAGE1_CKPT_PATH` and `ANCHORPT_STAGE2_CKPT_PATH`; they are unset by default.
 
-Keep the parameter JSON and manifest with each run. An environment variable is only an effective setting if the selected entry point actually reads it.
+Keep the parameter JSON with each run. An environment variable is only an effective setting if the selected entry point actually reads it.

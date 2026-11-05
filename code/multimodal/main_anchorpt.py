@@ -59,53 +59,6 @@ def _list_float_env(key, default=None):
     return [float(x) for x in re.findall(r"[-+]?(?:\d*\.\d+|\d+)(?:[eE][-+]?\d+)?", val)]
 
 
-def _default_manifest_path(params_json):
-    params_path = Path(params_json)
-    return params_path.with_name(params_path.stem + "_method_manifest.json")
-
-
-
-def _build_method_manifest(params):
-    return {
-        "primary_embedding": "latent_shared",
-        "primary_embedding_definition": "Shared encoder latent mean after Stage-II training",
-        "selection_policy": {
-            "uses_latent_shared_only": True,
-            "latent_shared_role": "final_shared_encoder_embedding",
-            "latent_concat_role": "diagnostic_only_not_for_selection",
-            "leiden_role": "included_in_biological_conservation_and_total",
-        },
-        "main_model": [
-            "strict_unpaired_label_free_training",
-            "shared_specific_latent_decomposition",
-            "shared_reconstruction",
-            "AnchorPT_transport_conditioned_pivotal_anchor_contrastive_alignment",
-        ],
-        "stability_regularizers": {
-            "stage1_knn_graph_weight": params.get("stage1_knn_graph_weight"),
-            "role": "Stage-I KNN graph stabilization",
-        },
-        "stage2_output_blend": {
-            "value": params.get("stage2_output_blend"),
-            "main_configuration_interpretation": (
-                "The default configuration uses blend=1.0, so the final shared embedding is the Stage-II encoder output. "
-                "Values below 1.0 blend the refined embedding with the Stage-I reference. "
-                "The blend coefficient is recorded in the effective parameters."
-            ),
-        },
-        "diagnostic_exports": [
-            "latent_shared_stage1_anchor",
-            "latent_shared_stage2_raw",
-        ],
-        "label_free_assertions": {
-            "strict_unpaired": params.get("strict_unpaired"),
-            "use_training_labels": params.get("use_labels"),
-            "batch_key": params.get("batch_key"),
-            "celltype_key": params.get("celltype_key"),
-        },
-    }
-
-
 def main():
     if any(arg in {"-h", "--help"} for arg in sys.argv[1:]):
         print("AnchorPT training entrypoint")
@@ -117,7 +70,6 @@ def main():
     input_h5ad = _str_env("ANCHORPT_INPUT_H5AD")
     output_h5ad = _str_env("ANCHORPT_OUTPUT_H5AD", "output.h5ad")
     params_json = _str_env("ANCHORPT_PARAMS_USED_JSON", "params.json")
-    manifest_json = _str_env("ANCHORPT_METHOD_MANIFEST_JSON", "")
 
     input_layer = _str_env("ANCHORPT_INPUT_LAYER", "train_input")
     modality_key = _str_env("ANCHORPT_MODALITY_KEY", "modality")
@@ -306,7 +258,7 @@ def main():
 
     integration.inference(n_samples=1)
 
-    # Persist embeddings, effective parameters, and the method-role manifest.
+    # Persist embeddings and effective parameters.
     result_adata = integration.get_adata()
     Path(output_h5ad).parent.mkdir(parents=True, exist_ok=True)
     result_adata.write_h5ad(output_h5ad)
@@ -377,12 +329,6 @@ def main():
     Path(params_json).parent.mkdir(parents=True, exist_ok=True)
     Path(params_json).write_text(json.dumps(params, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"Params saved to {params_json}")
-
-    manifest_path = Path(manifest_json) if manifest_json else _default_manifest_path(params_json)
-    manifest_path.parent.mkdir(parents=True, exist_ok=True)
-    method_manifest = _build_method_manifest(params)
-    manifest_path.write_text(json.dumps(method_manifest, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"Method manifest saved to {manifest_path}")
 
 
 if __name__ == "__main__":

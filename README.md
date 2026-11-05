@@ -23,16 +23,17 @@ The code release includes preprocessing, two-stage training, and embedding evalu
 - **Population-level correspondence.** State anchors provide an intermediate resolution between individual cells and whole-assay distributions.
 - **Shared and specific factors.** Separate latent factors represent common cellular organization and modality-specific variation.
 - **Transport-guided refinement.** Soft correspondence targets refine the representation while preserving its reference geometry.
-- **Recorded run settings.** Training exports the integrated AnnData object, effective parameters, and a method-role manifest.
+- **Recorded run settings.** Training exports the integrated AnnData object and effective parameters.
 
 ## Start with your data
 
 | Your input | Preparation | Training entry point |
 | :--- | :--- | :--- |
-| RNA and ATAC count matrices | [Matrix Market + GTF or gene–region mapping](docs/preprocessing.md#rnaatac-from-matrix-market) | `code/rna_atac/main_anchorpt.py` |
-| RNA and ATAC AnnData files | [AnnData + GTF](docs/preprocessing.md#rnaatac-from-anndata) | `code/rna_atac/main_anchorpt.py` |
+| RNA and ATAC: count matrices or AnnData files | [Map ATAC to gene space](docs/preprocessing.md#rnaatac-from-matrix-market) and [prepare AnnData inputs](docs/preprocessing.md#rnaatac-from-anndata) | `code/rna_atac/main_anchorpt.py` |
 | RNA and protein AnnData files | [HGNC-based feature mapping](docs/preprocessing.md#rnaprotein) | `code/multimodal/main_anchorpt.py` |
 | An assembled three-modality AnnData object | [Input contract and feature masks](docs/preprocessing.md#training-input-contract) | `code/multimodal/main_anchorpt.py` |
+
+Matrix Market count files and AnnData (`.h5ad`) objects are alternative input formats for the same RNA–ATAC workflow. Both preprocessing routes produce a common training AnnData object.
 
 **First run:** follow the [RNA–ATAC quickstart](docs/quickstart.md), which runs the scripts in [experiment/rna_atac/](experiment/rna_atac/) from preprocessing through evaluation. Commands use Bash and run from the repository root. The pinned dependency file targets CUDA 12.1 PyTorch; see the [installation notes](docs/installation.md).
 
@@ -44,7 +45,6 @@ The code release includes preprocessing, two-stage training, and embedding evalu
 | `obsm["latent_shared"]` | Primary integration embedding |
 | `obsm["latent_specific"]` | Modality-specific latent factors |
 | `params.json` | Effective model, optimization, input, and seed settings |
-| `params_method_manifest.json` | Embedding roles and training supervision settings |
 | `metrics.tsv` | Evaluation scores, when the evaluator is run |
 
 The examples use these filenames; output paths are configurable. Diagnostic embeddings and benchmark aggregation are explained in the [reproducibility guide](docs/reproducibility.md).

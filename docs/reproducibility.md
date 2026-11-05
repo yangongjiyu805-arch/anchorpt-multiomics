@@ -19,7 +19,7 @@ For each run, keep:
 1. The repository commit, selected source tree, Python/package versions, and hardware.
 2. Raw-data and annotation versions/checksums, preprocessing arguments, and cell/feature order.
 3. Split assignments and seeds, including whether biological labels were used to stratify a split.
-4. The effective parameter JSON, method-role manifest, training logs, and executed epoch counts.
+4. The effective parameter JSON, training logs, and executed epoch counts.
 5. The integrated AnnData file, evaluation arguments, evaluation seed, and all metric outputs.
 
 Use disjoint cell allocations for an unpaired benchmark. Record this separately from whether the model uses cell-type labels. The bundled three-modality split constructor uses canonical cell types as one stratification field; the default model training remains label-free.
@@ -69,7 +69,7 @@ Let `Bio`, `Modality`, and `Batch` denote arithmetic means of the corresponding 
 
 The biological group includes isolated-label, Leiden NMI/ARI, label-silhouette, and cLISI metrics. The modality group includes modality silhouette, iLISI, kBET, graph connectivity, and PCR. The batch group includes batch silhouette, iLISI, kBET, and PCR.
 
-Leiden NMI and ARI are included in the biological-conservation mean and therefore contribute to Total. The method manifest records this role under `selection_policy.leiden_role`.
+Leiden NMI and ARI are included in the biological-conservation mean and therefore contribute to Total.
 
 ## Missing metrics and repeated runs
 
