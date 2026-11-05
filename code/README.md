@@ -7,7 +7,7 @@ The implementation is grouped by responsibility:
 | Directory | Responsibility | Entry points |
 | :--- | :--- | :--- |
 | [preprocessing/](preprocessing/README.md) | Convert input assays and construct unpaired splits | Four dataset-preparation scripts |
-| [rna_atac/](rna_atac/README.md) | RNA–ATAC integration and evaluation | `main_anchorpt.py`, `evaluate_metrics.py` |
+| [rna_atac/](rna_atac/) | RNA–ATAC integration and evaluation | `main_anchorpt.py`, `evaluate_metrics.py` |
 | [multimodal/](multimodal/README.md) | RNA–protein and assembled three-modality integration | `main_anchorpt.py`, `evaluate_metrics.py` |
 
 Run commands from the **repository root**, where `requirements.txt` resides. Each training workflow includes an `anchorpt/` package containing the model, objectives, training routines, and runner.
