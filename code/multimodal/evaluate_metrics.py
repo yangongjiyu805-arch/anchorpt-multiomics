@@ -108,7 +108,7 @@ def parse_args() -> argparse.Namespace:
         "--ilisi-knn-m",
         type=int,
         default=90,
-        help="Number of neighbors used for modality iLISI. Defaults to 90, matching previous runs.",
+        help="Number of neighbors used for modality iLISI (default: 90).",
     )
     parser.add_argument(
         "--random-state",
@@ -402,7 +402,7 @@ class EmbeddingBench:
         aggregate_df = aggregate_df.drop(columns=[_METRIC_NAME])
         per_class_score = aggregate_df.groupby(_METRIC_TYPE).mean().transpose()
 
-        # Combine metric groups with the fixed weights used by the reported benchmark.
+        # Aggregate metric groups using fixed biological, modality, and batch weights.
         if (
             self._modality_integration_metrics is not None
             and self._batch_correction_metrics is not None

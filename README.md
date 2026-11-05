@@ -34,7 +34,7 @@ The code release includes preprocessing, two-stage training, and embedding evalu
 | RNA and protein AnnData files | [HGNC-based feature mapping](docs/preprocessing.md#rnaprotein) | `code/multimodal/main_anchorpt.py` |
 | An assembled three-modality AnnData object | [Input contract and feature masks](docs/preprocessing.md#training-input-contract) | `code/multimodal/main_anchorpt.py` |
 
-**First run:** follow the [RNA–ATAC quickstart](docs/quickstart.md) from preprocessing through evaluation. Commands use Bash and run from the repository root. The pinned dependency file targets CUDA 12.1 PyTorch; see the [installation notes](docs/installation.md).
+**First run:** follow the [RNA–ATAC quickstart](docs/quickstart.md), which runs the scripts in [experiment/rna_atac/](experiment/rna_atac/) from preprocessing through evaluation. Commands use Bash and run from the repository root. The pinned dependency file targets CUDA 12.1 PyTorch; see the [installation notes](docs/installation.md).
 
 ## What a run produces
 
@@ -67,6 +67,9 @@ anchorpt-multiomics/
 │       ├── main_anchorpt.py
 │       ├── evaluate_metrics.py
 │       └── anchorpt/
+├── experiment/                     # Executable examples and paper figures
+│   ├── rna_atac/                   # Configuration, preprocessing, training, evaluation
+│   └── figures/                    # figure1.pdf through figure6.pdf
 ├── docs/                           # Installation, tutorials, and experiment protocol
 │   ├── installation.md
 │   ├── quickstart.md
@@ -76,13 +79,15 @@ anchorpt-multiomics/
 └── .github/ISSUE_TEMPLATE/          # Structured issue reporting
 ```
 
-All executable code lives under [`code/`](code/README.md). The two workflow directories each bundle their own `anchorpt` package. Select the runner explicitly as described in [configuration](docs/configuration.md#selecting-the-runner).
+Method implementations live under [`code/`](code/README.md), and runnable examples under [`experiment/`](experiment/). The two implementation directories each bundle their own `anchorpt` package. Select the runner explicitly as described in [configuration](docs/configuration.md#selecting-the-runner).
+
+Paper figure PDFs are available in [`experiment/figures/`](experiment/figures/).
 
 ## Reproducing experiments
 
 This repository contains source code and preprocessing utilities; benchmark datasets, annotation files, checkpoints, and numerical result tables are not bundled.
 
-The [reproducibility guide](docs/reproducibility.md) records the current code defaults, output conventions, and evaluation protocol. Both training entry points default to **80 refinement epochs**, matching the current manuscript. Exact manuscript reproduction also requires the corresponding dataset splits and experiment configurations.
+The [reproducibility guide](docs/reproducibility.md) records the training defaults, output conventions, and evaluation protocol. Both training entry points default to **80 refinement epochs**. Use the corresponding dataset splits and complete experiment configurations when reproducing paper results.
 
 ## Questions and contributions
 

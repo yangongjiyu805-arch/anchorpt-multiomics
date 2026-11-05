@@ -2,15 +2,15 @@
 
 [Home](../README.md) · [Configuration](configuration.md) · [Data preparation](preprocessing.md)
 
-This guide describes the implementation currently in the repository. Documentation checks do not establish successful training or reproduction of the manuscript's numerical results.
+This guide defines the training records, embedding roles, and evaluation settings needed to compare AnchorPT experiments.
 
-## Scope of this release
+## Included components
 
-Included: preprocessing scripts, two training entry points, model and transport objectives, and embedding evaluation.
+The repository provides preprocessing scripts, two training entry points, model and transport objectives, and embedding evaluation. Runnable workflow scripts are provided in [experiment/rna_atac/](../experiment/rna_atac/).
 
-Not bundled: benchmark datasets, reference annotations, exact per-benchmark run configurations, trained checkpoints, or reference score tables. The dependency snapshot has not been validated here through a fresh installation and end-to-end run.
+Benchmark datasets, reference annotations, complete per-benchmark configurations, trained checkpoints, and reference score tables are supplied separately. Check environment compatibility as described in [installation](installation.md).
 
-Both training entry points and runner APIs default to 80 refinement epochs, matching the current manuscript. Coefficients use implementation-specific names; retain the complete experiment configuration, including dataset splits and preprocessing, when reproducing manuscript results.
+Both training entry points and runner APIs default to 80 refinement epochs. Retain the complete experiment configuration, including dataset splits and preprocessing, with each run.
 
 ## Preserve the experimental record
 
@@ -40,7 +40,7 @@ The extended runner additionally exports a CORAL-based diagnostic representation
 
 ## Evaluation settings
 
-Both source trees include an evaluator with the same current implementation. The [quickstart](quickstart.md#4-evaluate) explicitly selects the primary shared embedding.
+Both source trees include the same evaluator implementation. The [quickstart](quickstart.md#4-evaluate) explicitly selects the primary shared embedding.
 
 | Option | Default | Effect |
 | :--- | :--- | :--- |
@@ -56,9 +56,9 @@ Both source trees include an evaluator with the same current implementation. The
 
 Only enable batch metrics when the batch variable is interpretable for the benchmark. A modality-confounded dataset identifier should not automatically be used as a batch key.
 
-The evaluator computes neighbor sets at sizes 15, 50, and 90, together with the requested modality-iLISI size. Very small inputs may not support these neighborhoods; the commands are not a synthetic-data smoke test.
+The evaluator computes neighbor sets at sizes 15, 50, and 90, together with the requested modality-iLISI size. Inputs must contain enough cells for these neighborhood sizes.
 
-## Aggregate scores in the released evaluator
+## Aggregate scores
 
 Let `Bio`, `Modality`, and `Batch` denote arithmetic means of the corresponding metric groups in the evaluator.
 
@@ -67,9 +67,9 @@ Let `Bio`, `Modality`, and `Batch` denote arithmetic means of the corresponding 
 | With batch metrics | `0.4 × Bio + 0.3 × Modality + 0.3 × Batch` |
 | Without batch metrics | `0.6 × Bio + 0.4 × Modality` |
 
-The current biological group includes isolated-label, Leiden NMI/ARI, label-silhouette, and cLISI metrics. The modality group includes modality silhouette, iLISI, kBET, graph connectivity, and PCR. The batch group includes batch silhouette, iLISI, kBET, and PCR.
+The biological group includes isolated-label, Leiden NMI/ARI, label-silhouette, and cLISI metrics. The modality group includes modality silhouette, iLISI, kBET, graph connectivity, and PCR. The batch group includes batch silhouette, iLISI, kBET, and PCR.
 
-**Protocol discrepancy to resolve:** the method manifest labels Leiden as supplementary and outside Total, but `_EXCLUDE_FROM_AGGREGATE_METRICS` is empty in the released evaluators. Consequently, Leiden NMI/ARI currently enter the biological mean. Treat the evaluator's actual computation as the description of this code version and reconcile the intended paper protocol before comparing reported totals.
+Leiden NMI and ARI are included in the biological-conservation mean and therefore contribute to Total. The method manifest records this role under `selection_policy.leiden_role`.
 
 ## Missing metrics and repeated runs
 

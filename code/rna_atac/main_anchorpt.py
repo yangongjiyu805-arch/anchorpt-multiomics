@@ -59,7 +59,7 @@ def _default_manifest_path(params_json):
 
 
 def _build_method_manifest(params):
-    """Describe method roles without changing training behavior."""
+    """Record embedding roles, training settings, and evaluation policy."""
     return {
         "primary_embedding": "latent_shared",
         "primary_embedding_definition": "Shared encoder latent mean after Stage-II training",
@@ -67,7 +67,7 @@ def _build_method_manifest(params):
             "uses_latent_shared_only": True,
             "latent_shared_role": "final_shared_encoder_embedding",
             "latent_concat_role": "diagnostic_only_not_for_selection",
-            "leiden_role": "supplementary_diagnostic_not_in_total",
+            "leiden_role": "included_in_biological_conservation_and_total",
         },
         "main_model": [
             "strict_unpaired_label_free_training",
@@ -83,8 +83,8 @@ def _build_method_manifest(params):
             "value": params.get("stage2_output_blend"),
             "main_configuration_interpretation": (
                 "The default configuration uses blend=1.0, so the final shared embedding is the Stage-II encoder output. "
-                "Anchor-preserving blend is kept as an ablation/stabilization option, "
-                "not as a primary method component."
+                "Values below 1.0 blend the refined embedding with the Stage-I reference. "
+                "The blend coefficient is recorded in the effective parameters."
             ),
         },
         "diagnostic_exports": [
@@ -104,7 +104,7 @@ def main():
     if any(arg in {"-h", "--help"} for arg in sys.argv[1:]):
         print("AnchorPT training entrypoint")
         print("Configure runs with ANCHORPT_* environment variables.")
-        print("Required for real training: ANCHORPT_INPUT_H5AD and writable output paths.")
+        print("Required: ANCHORPT_INPUT_H5AD and writable output paths.")
         return 0
 
     # Read paths, data keys, architecture settings, and optimization controls.

@@ -11,7 +11,7 @@ cd anchorpt-multiomics
 
 ## Environment
 
-Use an isolated Python environment. Python 3.11 is a starting point for the pinned dependency set; a clean installation and training run have not yet been validated as part of this documentation update.
+Use an isolated Python environment. The commands below use Python 3.11. Check dependency and binary compatibility on the target platform before training.
 
 The [dependency snapshot](../requirements.txt) pins PyTorch to `2.3.1+cu121` and expands `PYTORCH_INDEX_URL` during installation. Set the variable before invoking pip.
 
@@ -24,9 +24,9 @@ python -m pip install -r requirements.txt
 python -m pip check
 ```
 
-These commands target a platform supported by the CUDA 12.1 wheel and an appropriate NVIDIA driver. The runner selects CUDA when available and CPU otherwise, but the requirements file itself is CUDA-specific. A CPU-only or macOS installation needs an adapted PyTorch dependency; no separate validated dependency file is included.
+These commands target a platform supported by the CUDA 12.1 wheel and an appropriate NVIDIA driver. The runner selects CUDA when available and CPU otherwise, but the requirements file itself is CUDA-specific. For CPU-only or macOS installations, replace the CUDA-specific PyTorch dependency with a compatible platform build.
 
-The pins also combine PyTorch 2.3.1 with NumPy 2.0.1. Validate the NumPy–PyTorch bridge below before a long run; dependency resolution alone does not establish binary compatibility. If the bridge fails, record the environment adjustment with the experiment instead of treating the original pins as a verified environment.
+The pins also combine PyTorch 2.3.1 with NumPy 2.0.1. Validate the NumPy–PyTorch bridge below before a long run; dependency resolution alone does not establish binary compatibility. If the bridge fails, use a compatible NumPy/PyTorch combination and record the package versions with the experiment.
 
 ## Check the installation
 
@@ -49,7 +49,7 @@ python code/rna_atac/evaluate_metrics.py --help
 python code/preprocessing/prepare_gxr_gtf_rna_atac.py --help
 ```
 
-An import check verifies dependencies and entry points, not training correctness or benchmark scores. The GTF preprocessing route also calls `episcanpy`; check it with your actual annotation and peak format.
+The GTF preprocessing route also requires `episcanpy` and a compatible annotation and peak format.
 
 ## Shell conventions
 

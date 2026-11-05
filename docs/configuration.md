@@ -32,7 +32,7 @@ Under strict-unpaired mode, nonempty batch/cell-type keys or enabled training la
 
 ## Representation and optimization
 
-These are **released code defaults**, not a complete manuscript experiment specification.
+The following tables list the training defaults. Record overrides in the effective parameter JSON for each experiment.
 
 | Variable | Default |
 | :--- | :--- |
@@ -80,7 +80,7 @@ Set `ANCHORPT_RANDOM_SEED` explicitly. Without it (or `ANCHORPT_SEED`), the RNA�
 | `ANCHORPT_STAGE1_KNN_GRAPH_MAX_CELLS` | `128` |
 | `ANCHORPT_STAGE2_PIVOTAL_ANCHOR_WARMUP_EPOCHS` | `5` |
 
-Names follow the implementation. Do not identify a code coefficient with a manuscript loss coefficient without checking its use in the objective and training code.
+Coefficient names follow their definitions in the objective and training code.
 
 ## RNA–protein and three-modality inputs
 
@@ -89,7 +89,7 @@ The extended entry point adds `ANCHORPT_USE_FEATURE_MASK` (default `false`) and 
 For the output of the bundled RNA–protein preprocessor:
 
 ```bash
-export ANCHORPT_SRC_DIR="$PWD/src_rna_adt_three_omics"
+export ANCHORPT_SRC_DIR="$PWD/code/multimodal"
 export ANCHORPT_INPUT_H5AD="$PWD/data/processed/rna_protein.h5ad"
 export ANCHORPT_OUTPUT_H5AD="$PWD/results/rna-protein/result.h5ad"
 export ANCHORPT_PARAMS_USED_JSON="$PWD/results/rna-protein/params.json"

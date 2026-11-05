@@ -2,85 +2,58 @@
 
 [Home](../README.md) · [Installation](installation.md) · [Other input routes](preprocessing.md)
 
-This walkthrough preprocesses your own RNA and ATAC matrices, trains AnchorPT, and evaluates the shared embedding. It is a usage example, not a benchmark result or an exact manuscript experiment configuration.
-
-Run from the repository root after [installation](installation.md). Replace the three input paths with your files.
+The executable example in [experiment/rna_atac/](../experiment/rna_atac/) runs preprocessing, two-stage training, and evaluation. Install the [dependencies](installation.md), then run the commands below from the repository root.
 
 ## 1. Prepare paths
 
 ```bash
-export RNA_DIR=/path/to/rna
-export ATAC_DIR=/path/to/atac
-export GTF_FILE=/path/to/annotation.gtf
-
-mkdir -p data/processed results/rna-atac
+export RNA_DIR=/absolute/path/to/rna
+export ATAC_DIR=/absolute/path/to/atac
+export GTF_FILE=/absolute/path/to/annotation.gtf
 ```
 
-Each assay directory must contain `matrix.mtx`, `features.tsv`, and `barcodes.tsv`. Matrices use **features × cells** orientation. Optional `metadata.csv` files can provide `celltype` and `batch` columns. See [input formats](preprocessing.md#rnaatac-from-matrix-market).
+Each assay directory must contain `matrix.mtx`, `features.tsv`, and `barcodes.tsv`. Matrices use **features × cells** orientation. Optional `metadata.csv` files use barcodes as the first-column index and can provide `celltype` and `batch` columns. See [input formats](preprocessing.md#rnaatac-from-matrix-market).
+
+Use a GTF matching the genome assembly and chromosome naming of your ATAC peaks. The example filters annotation sources to `HAVANA`; set `GENEACTIVITY_ANNOTATION=none` to disable this filter, or select the appropriate source for your annotation.
+
+Shared paths and settings are defined in [config.sh](../experiment/rna_atac/config.sh). Set `PREPROCESSED_H5AD`, `RUN_DIR`, `TRAIN_SEED`, or `EVAL_SEED` before running to override them.
 
 ## 2. Build the training AnnData object
 
 ```bash
-python code/preprocessing/prepare_gxr_gtf_rna_atac.py \
-  --rna-dir "$RNA_DIR" \
-  --atac-dir "$ATAC_DIR" \
-  --route gtf \
-  --gtf "$GTF_FILE" \
-  --geneactivity-annotation HAVANA \
-  --rna-label-col celltype \
-  --atac-label-col celltype \
-  --rna-batch-col batch \
-  --atac-batch-col batch \
-  --top-genes 5000 \
-  --target-sum 10000 \
-  --output data/processed/rna_atac.h5ad
+bash experiment/rna_atac/preprocess.sh
 ```
 
-Use an annotation matching the genome assembly and chromosome naming of your ATAC peaks. `HAVANA` is an annotation-source filter; change it for your GTF as described in [preprocessing](preprocessing.md).
+The default output is `data/processed/rna_atac.h5ad`, with normalized values in `layers["train_input"]`. Input datasets and reference annotations are supplied separately.
 
 ## 3. Train
 
 ```bash
-export ANCHORPT_SRC_DIR="$PWD/src"
-export ANCHORPT_INPUT_H5AD="$PWD/data/processed/rna_atac.h5ad"
-export ANCHORPT_OUTPUT_H5AD="$PWD/results/rna-atac/result.h5ad"
-export ANCHORPT_PARAMS_USED_JSON="$PWD/results/rna-atac/params.json"
-export ANCHORPT_INPUT_LAYER=train_input
-export ANCHORPT_MODALITY_KEY=modality
-export ANCHORPT_TRAINING_MODE=two_stage
-export ANCHORPT_RANDOM_SEED=7
-export ANCHORPT_STAGE1_EPOCH_NUM=100
-export ANCHORPT_STAGE2_EPOCH_NUM=80
-export ANCHORPT_STRICT_UNPAIRED=true
-export ANCHORPT_USE_TRAINING_LABELS=false
-export ANCHORPT_BATCH_KEY=""
-export ANCHORPT_CELLTYPE_KEY=""
-
-python code/rna_atac/main_anchorpt.py
+bash experiment/rna_atac/train.sh
 ```
 
-The example explicitly sets the released training defaults. For a manuscript experiment, use its full configuration rather than changing only the epoch count.
+The example requests 100 Stage-I epochs and 80 Stage-II epochs, with early stopping and training seed 7. Training uses modality identities without cell-type or batch-label supervision. Evaluation annotations can remain in the input AnnData object.
 
-Training uses modality identities, but does not use cell-type or batch-label supervision under the strict-unpaired configuration. Those annotations can remain in the AnnData object for evaluation. The [configuration guide](configuration.md) explains the available controls.
+Set `ANCHORPT_STAGE1_EPOCH_NUM` and `ANCHORPT_STAGE2_EPOCH_NUM` to override the requested epoch counts. See [configuration](configuration.md) for the model and transport settings.
 
 ## 4. Evaluate
 
 ```bash
-python code/rna_atac/evaluate_metrics.py \
-  --input results/rna-atac/result.h5ad \
-  --embedding-key latent_shared \
-  --label-key cell_type \
-  --modality-key modality \
-  --batch-key none \
-  --random-state 0 \
-  --n-jobs 8 \
-  --format tsv \
-  --output results/rna-atac/metrics.tsv
+bash experiment/rna_atac/evaluate.sh
 ```
 
-Biological labels are required for this evaluator. Use `--batch-key batch` only when `obs["batch"]` represents a meaningful nuisance variable for that benchmark. The `none` setting omits batch-correction metrics; it is not an instruction to infer batch labels.
+The evaluator selects `obsm["latent_shared"]`, uses evaluation seed 0, and writes TSV scores. Biological labels are required. Batch-correction metrics are omitted by default; set `EVAL_BATCH_KEY=batch` only when `obs["batch"]` is an interpretable nuisance variable for the benchmark.
 
 ## 5. Inspect the outputs
+
+By default, outputs are written to `results/rna-atac/`:
+
+| File | Contents |
+| :--- | :--- |
+| `result.h5ad` | Integrated AnnData and learned embeddings |
+| `params.json` | Effective model, input, optimization, and seed settings |
+| `params_method_manifest.json` | Embedding and evaluation roles |
+| `metrics.tsv` | Evaluation scores |
 
 ```python
 import anndata as ad
@@ -90,4 +63,4 @@ embedding = result.obsm["latent_shared"]
 print(result.shape, embedding.shape)
 ```
 
-Keep `params.json`, `params_method_manifest.json`, `metrics.tsv`, and the run environment alongside the output. See [reproducibility](reproducibility.md) before comparing aggregate scores.
+Keep the outputs, configuration, input provenance, and environment together. The [evaluation protocol](reproducibility.md) defines embedding roles and aggregate scores.
