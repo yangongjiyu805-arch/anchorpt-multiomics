@@ -218,3 +218,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# AnchorPT datasets, checkpoints, and generated experiment outputs
+/data/
+/results/
+/outputs/
+*.h5ad
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.ckpt

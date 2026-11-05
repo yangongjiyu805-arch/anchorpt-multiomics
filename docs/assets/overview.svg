@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="396" viewBox="0 0 1160 396" role="img" aria-labelledby="title desc">
+<title id="title">AnchorPT workflow</title>
+<desc id="desc">Unpaired RNA, ATAC, and protein observations are represented by shared and specific factors. Soft population summaries support state-level transport and refinement of a shared cellular embedding. Conceptual schematic.</desc>
+<defs>
+  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f0fdfa"/><stop offset="1" stop-color="#f8fafc"/></linearGradient>
+  <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="none" stroke="#94a3b8" stroke-width="1.4"/></marker>
+</defs>
+<rect width="1160" height="396" rx="20" fill="url(#bg)"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="32" y="35" font-size="12" font-weight="700" letter-spacing="2" fill="#0f766e">ANCHORPT / WORKFLOW</text>
+<text x="32" y="68" font-size="23" font-weight="700" fill="#0f172a">From unpaired observations to state-level correspondence</text>
+<g fill="#fff" stroke="#dbe4ea">
+<rect x="32" y="99" width="250" height="243" rx="14"/>
+<rect x="314" y="99" width="250" height="243" rx="14"/>
+<rect x="596" y="99" width="250" height="243" rx="14"/>
+<rect x="878" y="99" width="250" height="243" rx="14"/>
+</g>
+<g fill="none" stroke="#94a3b8" stroke-width="1.7" marker-end="url(#arrow)">
+<path d="M286 222H308"/><path d="M568 222H590"/><path d="M850 222H872"/>
+</g>
+<g font-size="11" font-weight="700" letter-spacing="1.2" fill="#64748b">
+<text x="52" y="126">01 / INPUT</text><text x="334" y="126">02 / REPRESENTATION</text><text x="616" y="126">03 / CORRESPONDENCE</text><text x="898" y="126">04 / OUTPUT</text>
+</g>
+<g font-size="18" font-weight="700" fill="#0f172a">
+<text x="52" y="155">Independent assays</text><text x="334" y="155">Shared + specific</text><text x="616" y="155">State transport</text><text x="898" y="155">Integrated cells</text>
+</g>
+<g font-size="14" font-weight="700">
+<rect x="52" y="180" width="210" height="30" rx="7" fill="#ccfbf1"/><text x="67" y="200" fill="#0f766e">RNA</text>
+<rect x="52" y="220" width="210" height="30" rx="7" fill="#dbeafe"/><text x="67" y="240" fill="#1d4ed8">ATAC</text>
+<rect x="52" y="260" width="210" height="30" rx="7" fill="#ede9fe"/><text x="67" y="280" fill="#6d28d9">Protein / ADT</text>
+</g>
+<g stroke="#cbd5e1" stroke-width="1.6">
+<path d="M351 198L405 228L351 267M405 228L443 198M405 228L443 267"/>
+</g>
+<g fill="#0f766e"><circle cx="351" cy="198" r="9"/><circle cx="351" cy="267" r="9"/><circle cx="405" cy="228" r="17"/></g>
+<g fill="#94a3b8"><circle cx="443" cy="198" r="9"/><circle cx="443" cy="267" r="9"/></g>
+<text x="464" y="204" font-size="13" fill="#475569">Shared</text><text x="464" y="272" font-size="13" fill="#475569">Specific</text>
+<g stroke="#99cfc9" stroke-width="2" fill="none">
+<path d="M650 193L785 222M650 193L785 268M650 232L785 222M650 271L785 184M650 271L785 268"/>
+</g>
+<g fill="#0f766e"><circle cx="650" cy="193" r="10"/><circle cx="650" cy="232" r="14"/><circle cx="650" cy="271" r="8"/></g>
+<g fill="#2563eb"><circle cx="785" cy="184" r="8"/><circle cx="785" cy="222" r="14"/><circle cx="785" cy="268" r="10"/></g>
+<g fill="#0f766e"><circle cx="928" cy="205" r="6"/><circle cx="943" cy="193" r="5"/><circle cx="951" cy="211" r="6"/><circle cx="939" cy="226" r="5"/><circle cx="1029" cy="259" r="6"/><circle cx="1042" cy="246" r="5"/><circle cx="1054" cy="264" r="6"/></g>
+<g fill="#2563eb"><circle cx="927" cy="222" r="5"/><circle cx="955" cy="193" r="5"/><circle cx="1038" cy="273" r="5"/><circle cx="1063" cy="248" r="5"/><circle cx="1022" cy="244" r="5"/></g>
+<g fill="#7c3aed"><circle cx="918" cy="191" r="5"/><circle cx="963" cy="223" r="5"/><circle cx="1059" cy="278" r="5"/><circle cx="1015" cy="267" r="5"/></g>
+<g font-size="13" fill="#64748b">
+<text x="52" y="320">Distinct cell populations</text><text x="334" y="320">Learn a reference geometry</text><text x="616" y="320">Refine with soft relations</text><text x="898" y="320">Evaluate the shared embedding</text>
+</g>
+<text x="32" y="373" font-size="12" fill="#64748b">Conceptual schematic · RNA–ATAC, RNA–protein, and assembled three-modality inputs</text>
+</g>
+</svg>

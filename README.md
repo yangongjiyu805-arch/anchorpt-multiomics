@@ -1,77 +1,95 @@
-# AnchorPT RNA-ATAC Tutorial
+<div align="center">
 
-This tutorial runs the complete RNA-ATAC workflow from preprocessing to evaluation.
+# AnchorPT
 
-## 1. Define paths
+### Biological States as Correspondence Primitives<br>for Unpaired Single-Cell Multi-Omics Integration
 
-Replace the placeholder values before running the commands.
+State-level population transport for cross-modal correspondence.
 
-```bash
-export REQUIREMENTS_FILE="<REQUIREMENTS_FILE>"
-export PYTORCH_INDEX_URL="<PYTORCH_INDEX_URL>"
-export PREPROCESS_SCRIPT="<RNA_ATAC_PREPROCESS_SCRIPT>"
-export TRAIN_SCRIPT="<ANCHORPT_TRAIN_SCRIPT>"
-export EVALUATION_SCRIPT="<EVALUATION_SCRIPT>"
-export RNA_DIR="<RNA_INPUT_DIRECTORY>"
-export ATAC_DIR="<ATAC_INPUT_DIRECTORY>"
-export GTF_FILE="<GTF_ANNOTATION_FILE>"
-export PREPROCESSED_H5AD="<PREPROCESSED_H5AD>"
-export RESULT_H5AD="<RESULT_H5AD>"
-export PARAMS_JSON="<PARAMETER_JSON>"
-export METRICS_FILE="<METRICS_FILE>"
+[![License: MIT](https://img.shields.io/badge/License-MIT-0F766E.svg)](LICENSE)
+[![Framework: PyTorch](https://img.shields.io/badge/Framework-PyTorch-334155.svg)](requirements.txt)
+[![Data: AnnData](https://img.shields.io/badge/Data-AnnData-334155.svg)](docs/preprocessing.md)
+
+**[Get started](docs/quickstart.md)** · **[Installation](docs/installation.md)** · **[Data preparation](docs/preprocessing.md)** · **[Configuration](docs/configuration.md)** · **[Reproducibility](docs/reproducibility.md)**
+
+</div>
+
+<br>
+
+![AnchorPT workflow: modality-specific observations, shared representations, state-level transport, and integrated embeddings.](docs/assets/overview.svg)
+
+## Overview
+
+AnchorPT studies correspondence between biological populations in **unpaired single-cell multi-omics data**. It learns shared and modality-specific representations, summarizes populations through soft state assignments, and refines the shared representation using transport between state anchors.
+
+The code release includes preprocessing, two-stage training, and embedding evaluation for RNA–ATAC and RNA–protein workflows, together with an extended runner for two or three modalities.
+
+- **Population-level correspondence.** State anchors provide an intermediate resolution between individual cells and whole-assay distributions.
+- **Shared and specific factors.** Separate latent factors represent common cellular organization and modality-specific variation.
+- **Transport-guided refinement.** Soft correspondence targets refine the representation while preserving its reference geometry.
+- **Recorded run settings.** Training exports the integrated AnnData object, effective parameters, and a method-role manifest.
+
+## Start with your data
+
+| Your input | Preparation | Training entry point |
+| :--- | :--- | :--- |
+| RNA and ATAC count matrices | [Matrix Market + GTF or gene–region mapping](docs/preprocessing.md#rnaatac-from-matrix-market) | `src/main_anchorpt.py` |
+| RNA and ATAC AnnData files | [AnnData + GTF](docs/preprocessing.md#rnaatac-from-anndata) | `src/main_anchorpt.py` |
+| RNA and protein AnnData files | [HGNC-based feature mapping](docs/preprocessing.md#rnaprotein) | `src_rna_adt_three_omics/main_anchorpt.py` |
+| An assembled three-modality AnnData object | [Input contract and feature masks](docs/preprocessing.md#training-input-contract) | `src_rna_adt_three_omics/main_anchorpt.py` |
+
+**First run:** follow the [RNA–ATAC quickstart](docs/quickstart.md) from preprocessing through evaluation. Commands use Bash and run from the repository root. The pinned dependency file targets CUDA 12.1 PyTorch; see the [installation notes](docs/installation.md).
+
+## What a run produces
+
+| Artifact | Purpose |
+| :--- | :--- |
+| `result.h5ad` | Input annotations and learned embeddings |
+| `obsm["latent_shared"]` | Primary integration embedding |
+| `obsm["latent_specific"]` | Modality-specific latent factors |
+| `params.json` | Effective model, optimization, input, and seed settings |
+| `params_method_manifest.json` | Embedding roles and training supervision settings |
+| `metrics.tsv` | Evaluation scores, when the evaluator is run |
+
+The examples use these filenames; output paths are configurable. Diagnostic embeddings and benchmark aggregation are explained in the [reproducibility guide](docs/reproducibility.md).
+
+## Repository map
+
+```text
+anchorpt-multiomics/
+├── README.md
+├── LICENSE
+├── requirements.txt
+├── docs/
+│   ├── installation.md
+│   ├── quickstart.md
+│   ├── preprocessing.md
+│   ├── configuration.md
+│   ├── reproducibility.md
+│   └── assets/overview.svg
+├── pre_data/                       # Input preparation and unpaired splitting
+├── src/                            # RNA–ATAC workflow
+│   ├── main_anchorpt.py
+│   ├── evaluate_metrics.py
+│   └── anchorpt/                   # Model, objectives, training, and runner
+└── src_rna_adt_three_omics/          # Extended two-/three-modality workflow
+    ├── main_anchorpt.py
+    ├── evaluate_metrics.py
+    └── anchorpt/
 ```
 
-The RNA and ATAC directories must each contain `matrix.mtx`, `features.tsv`, and `barcodes.tsv`. An optional `metadata.csv` file may contain `celltype` and `batch` columns. The matrices must use features by cells orientation.
+The two source trees retain their original entry points. Select the runner explicitly as described in [configuration](docs/configuration.md#selecting-the-runner).
 
-## 2. Install dependencies
+## Reproducing experiments
 
-```bash
-python -m pip install -r "$REQUIREMENTS_FILE"
-```
+This repository contains source code and preprocessing utilities; benchmark datasets, annotation files, checkpoints, and numerical result tables are not bundled.
 
-## 3. Preprocess RNA and ATAC
+The [reproducibility guide](docs/reproducibility.md) records the current code defaults, output conventions, and evaluation protocol. Exact manuscript reproduction requires the corresponding dataset splits and experiment configurations. In particular, the released entry points default to **40 refinement epochs**; this differs from the **80 epochs** described in the current manuscript.
 
-```bash
-python "$PREPROCESS_SCRIPT" \
-  --rna-dir "$RNA_DIR" \
-  --atac-dir "$ATAC_DIR" \
-  --route gtf \
-  --gtf "$GTF_FILE" \
-  --geneactivity-annotation HAVANA \
-  --rna-label-col celltype \
-  --atac-label-col celltype \
-  --rna-batch-col batch \
-  --atac-batch-col batch \
-  --top-genes 5000 \
-  --target-sum 10000 \
-  --output "$PREPROCESSED_H5AD"
-```
+## Questions and contributions
 
-The generated h5ad contains `layers["counts"]`, `layers["train_input"]`, `obs["modality"]`, `obs["cell_type"]`, `obs["batch"]`, and `obs["dataset"]`.
+For installation problems or reproducibility questions, [open an issue](https://github.com/yangongjiyu805-arch/anchorpt-multiomics/issues). Include the commit, runner, effective configuration, environment, and traceback. See [CONTRIBUTING.md](CONTRIBUTING.md) for a concise reporting checklist.
 
-## 4. Run AnchorPT
+## License
 
-```bash
-export ANCHORPT_INPUT_H5AD="$PREPROCESSED_H5AD"
-export ANCHORPT_OUTPUT_H5AD="$RESULT_H5AD"
-export ANCHORPT_PARAMS_USED_JSON="$PARAMS_JSON"
-export ANCHORPT_INPUT_LAYER=train_input
-export ANCHORPT_MODALITY_KEY=modality
-export ANCHORPT_RANDOM_SEED=7
-
-python "$TRAIN_SCRIPT"
-```
-
-## 5. Evaluate the embedding
-
-```bash
-python "$EVALUATION_SCRIPT" \
-  --input "$RESULT_H5AD" \
-  --embedding-key latent_shared \
-  --label-key cell_type \
-  --modality-key modality \
-  --batch-key batch \
-  --n-jobs 8 \
-  --format tsv \
-  --output "$METRICS_FILE"
-```
+Code is released under the [MIT License](LICENSE). Obtain datasets and reference annotations from their respective providers under their applicable terms.

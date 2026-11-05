@@ -1,0 +1,35 @@
+name: Bug report
+description: Report an installation, training, or evaluation problem.
+title: "[Bug] "
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+      description: Describe the problem and the command that triggered it.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Version and environment
+      description: Commit ID, entry point, operating system, Python, package versions, GPU and driver.
+    validations:
+      required: true
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Configuration and input structure
+      description: Effective parameters, seeds, input shape, metadata keys, and feature masks. Remove private paths or sensitive data before sharing.
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Traceback or logs
+      render: text
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Minimal commands or an example that demonstrates the problem.
+    validations:
+      required: true
