@@ -14,10 +14,6 @@ State-level population transport for cross-modal correspondence.
 
 </div>
 
-<br>
-
-![AnchorPT workflow: modality-specific observations, shared representations, state-level transport, and integrated embeddings.](docs/assets/overview.svg)
-
 ## Overview
 
 AnchorPT studies correspondence between biological populations in **unpaired single-cell multi-omics data**. It learns shared and modality-specific representations, summarizes populations through soft state assignments, and refines the shared representation using transport between state anchors.
@@ -65,8 +61,7 @@ anchorpt-multiomics/
 │   ├── quickstart.md
 │   ├── preprocessing.md
 │   ├── configuration.md
-│   ├── reproducibility.md
-│   └── assets/overview.svg
+│   └── reproducibility.md
 ├── pre_data/                       # Input preparation and unpaired splitting
 ├── src/                            # RNA–ATAC workflow
 │   ├── main_anchorpt.py
