@@ -1,8 +1,4 @@
-"""Prepare feature-aligned RNA-ATAC inputs from QC h5ad files.
-
-GTF-derived ATAC gene activity is combined with RNA counts through the
-companion Matrix Market preprocessing module.
-"""
+"""Prepare feature-aligned RNA-ATAC inputs from QC h5ad files."""
 import argparse
 import importlib.util
 from pathlib import Path

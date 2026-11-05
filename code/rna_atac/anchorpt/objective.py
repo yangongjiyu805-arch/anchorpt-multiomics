@@ -1,9 +1,4 @@
-"""Implement the population-transport objective used in AnchorPT Stage II.
-
-The module forms modality-specific pivotal anchors, estimates an unbalanced
-transport plan between anchor populations, and uses the plan as a soft target
-for bidirectional contrastive learning.
-"""
+"""Implement the population-transport objective used in AnchorPT Stage II."""
 
 import numpy as np
 import torch

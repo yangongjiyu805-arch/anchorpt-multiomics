@@ -1,8 +1,4 @@
-"""Prepare feature-aligned RNA-protein inputs from QC h5ad files.
-
-Protein markers are mapped to HGNC symbols, CLR-normalized, and aligned with
-normalized RNA features in a shared output matrix.
-"""
+"""Prepare feature-aligned RNA-protein inputs from QC h5ad files."""
 import argparse, hashlib, json
 from pathlib import Path
 import anndata as ad

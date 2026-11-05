@@ -1,10 +1,4 @@
-"""Evaluate an AnchorPT embedding with scIB-style metrics.
-
-The script validates AnnData fields, builds reusable nearest-neighbor graphs,
-and computes biological conservation, modality integration, and optional batch
-correction scores. It exports individual metrics together with the weighted
-aggregate used by the benchmark.
-"""
+"""Evaluate an AnchorPT embedding with scIB-style metrics."""
 
 import argparse
 import contextlib
@@ -157,7 +151,7 @@ def clean_obs_values(adata: AnnData, keys: List[str]) -> None:
         adata.obs[key] = values.astype(str).astype("category")
 
 
-# Adapt label containers for scib-metrics versions that require NumPy arrays.
+# Adapt labels to scib-metrics NumPy inputs.
 def patch_scib_series_inputs() -> None:
     def arr(value: Any) -> np.ndarray:
         return np.asarray(value)
@@ -226,7 +220,7 @@ def patch_scib_series_inputs() -> None:
     scib_metrics.nmi_ari_cluster_labels_leiden = nmi_ari_cluster_labels_leiden
 
 
-# Bind each metric to the embedding, metadata, and neighborhood scale it requires.
+# Route metrics to their inputs and neighborhoods.
 def run_metric(metric_name: str, ad: AnnData, metric_fn: Callable[..., Any]) -> Any:
     if metric_name == "isolated_labels":
         return metric_fn(ad.X, ad.obs[_LABELS], ad.obs[_MODALITY])
@@ -316,7 +310,7 @@ class EmbeddingBench:
             ad.obs[_LABELS] = np.asarray(self._adata.obs[self._label_key].values)
             ad.obsm[_X_PRE] = self._adata.obsm[self._pre_integrated_embedding_obsm_key]
 
-        # Reuse subsets of one maximum-size neighbor graph across neighborhood metrics.
+        # Reuse the largest neighbor graph.
         for ad in self._emb_adatas.values():
             if neighbor_computer is not None:
                 neigh_result = neighbor_computer(ad.X, max(self._neighbor_values))

@@ -1,8 +1,4 @@
-"""Prepare feature-aligned RNA-ATAC inputs from Matrix Market data.
-
-Peak-level ATAC counts are mapped through either a GxR table or a GTF
-annotation before joint normalization and modality-balanced gene selection.
-"""
+"""Prepare feature-aligned RNA-ATAC inputs from Matrix Market data."""
 
 from __future__ import annotations
 

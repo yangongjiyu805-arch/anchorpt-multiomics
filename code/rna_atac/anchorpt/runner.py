@@ -1,9 +1,4 @@
-"""Coordinate data preparation, two-stage training, and result export for AnchorPT.
-
-The runner converts configured observation metadata into model inputs, builds the
-network and datasets, manages modality-stratified validation splits, initializes
-Stage-II anchors from Stage-I shared means, and records embeddings in AnnData.
-"""
+"""Coordinate data preparation, two-stage training, and result export for AnchorPT."""
 
 import numpy as np
 import torch
@@ -71,7 +66,7 @@ class AnchorPTRunner:
         else:
             self.data = to_model_array(self.adata.layers[layer])
 
-        # Encode configured observation fields as categorical model inputs.
+        # Encode categorical covariates.
         label_encoder = LabelEncoder()
         onehot_encoder = OneHotEncoder(sparse_output=False)
 
@@ -216,7 +211,7 @@ class AnchorPTRunner:
         self.lr = lr
         self.accumulation_steps = accumulation_steps
         self.adaptlr = adaptlr
-        # Preserve modality proportions in the training and validation partitions.
+        # Stratify splits by modality.
         if valid_prop > 0:
             train_indices, valid_indices = train_test_split(
                 np.arange(len(self.train_dataset)),
@@ -360,7 +355,7 @@ class AnchorPTRunner:
             train_indices = np.arange(len(self.train_dataset))
             valid_indices = np.arange(len(self.train_dataset))
 
-        # Reuse Stage-I shared means for anchor initialization and graph preservation.
+        # Initialize anchors and neighborhoods from Stage I.
         print("Initializing AnchorPT pivotal anchors from Stage 1 shared latent.")
         z_shared, _ = self.inference(n_samples=1, batch_size=batch_size, update=False, returns=True)
         self.stage1_anchor_latent = np.asarray(z_shared, dtype=np.float32)
@@ -452,7 +447,7 @@ class AnchorPTRunner:
         else:
             self.z_shared, self.z_specific = encode_dataset(self.device, dataset, self.model, batch_size)
 
-        # Store diagnostic embeddings and apply the optional Stage-I/Stage-II blend.
+        # Export embeddings and apply optional blending.
         if update:
             if getattr(self, 'stage1_anchor_latent', None) is not None and len(self.stage1_anchor_latent) == len(self.adata):
                 self.adata.obsm['latent_shared_stage1_anchor'] = np.asarray(self.stage1_anchor_latent, dtype=np.float32)

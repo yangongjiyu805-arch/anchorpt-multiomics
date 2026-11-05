@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Evaluate the primary shared embedding with a separate evaluation seed.
+# Evaluate the shared embedding.
 set -euo pipefail
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/config.sh"
 

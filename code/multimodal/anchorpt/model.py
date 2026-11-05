@@ -1,10 +1,4 @@
-"""Define the variational model used by AnchorPT.
-
-The network separates shared and modality-specific latent variables and supports
-continuous, negative-binomial, and zero-inflated negative-binomial reconstruction.
-Encoder and decoder routing can be shared or modality-specific, while an auxiliary
-shared-only decoder encourages the common latent space to retain reconstructive signal.
-"""
+"""Define the variational model used by AnchorPT."""
 
 import torch
 import torch.nn as nn

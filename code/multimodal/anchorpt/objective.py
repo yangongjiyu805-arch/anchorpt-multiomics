@@ -1,9 +1,4 @@
-"""Implement population transport for two- and three-modality AnchorPT.
-
-Each modality owns a pivotal-anchor population. Two modalities use one transport
-pair, while three modalities use RNA-centered pairs with optional pair weights;
-the resulting plans provide soft targets for symmetric contrastive learning.
-"""
+"""Implement population transport for two- and three-modality AnchorPT."""
 
 import numpy as np
 import torch

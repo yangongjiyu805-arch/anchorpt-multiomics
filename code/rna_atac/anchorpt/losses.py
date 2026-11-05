@@ -1,9 +1,4 @@
-"""Implement reconstruction and latent regularization losses for AnchorPT.
-
-Count-valued inputs use a zero-inflated negative-binomial objective, while
-continuous inputs use squared reconstruction error. Optional feature masks are
-rescaled so losses remain comparable across samples with different active sets.
-"""
+"""Implement reconstruction and latent regularization losses for AnchorPT."""
 
 import torch
 import torch.nn as nn

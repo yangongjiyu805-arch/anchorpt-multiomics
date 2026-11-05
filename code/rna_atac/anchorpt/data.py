@@ -1,9 +1,4 @@
-"""Prepare multi-omics observations for PyTorch data loading.
-
-The dataset preserves sparse inputs until individual rows are requested. It also
-packages covariates, modality indicators, feature-domain indicators, labels, and
-optional Stage-I anchor representations for the training pipeline.
-"""
+"""Prepare multi-omics observations for PyTorch data loading."""
 
 import numpy as np
 import torch

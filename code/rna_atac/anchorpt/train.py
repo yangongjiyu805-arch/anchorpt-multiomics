@@ -1,9 +1,4 @@
-"""Provide optimization and embedding utilities for AnchorPT.
-
-The module supports modality-balanced minibatches, variational pretraining,
-anchor-guided refinement, validation, early stopping, and deterministic
-embedding export.
-"""
+"""Provide optimization and embedding utilities for AnchorPT."""
 
 import numpy as np
 import torch
@@ -48,7 +43,7 @@ class BalanceSampler:
         base = self.batch_size // self.num_modalities
         remainder = self.batch_size % self.num_modalities
 
-        # Draw a fixed modality quota for every minibatch.
+        # Balance modalities per minibatch.
         for batch_idx in range(self.num_batches):
             modality_order = rng.permutation(self.modalities)
             batch = []
@@ -312,7 +307,7 @@ def _stage1_knn_graph_loss(z_current, z_anchor, k=8, max_cells=96, eps=1e-6):
 
 
 
-# Refresh population-level transport statistics from the complete training split.
+# Refresh transport statistics over the training split.
 def _refresh_global_anchorpt_anchor_transport_plan(device, train_dataset, model, anchorpt, batch_size):
     if not getattr(anchorpt, 'use_global_anchor_transport', False):
         return None

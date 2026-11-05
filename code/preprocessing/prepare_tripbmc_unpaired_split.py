@@ -1,8 +1,4 @@
-"""Create a deterministic crossed-unpaired assignment for TriPBMC cells.
-
-Cells are stratified by source, condition, technical group, and cell type
-before being assigned to exactly one of the three modalities.
-"""
+"""Create a deterministic crossed-unpaired assignment for TriPBMC cells."""
 
 import argparse
 import csv

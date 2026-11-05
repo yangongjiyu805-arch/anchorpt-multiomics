@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Shared paths and example settings. Source this file from the workflow scripts.
+# Shared experiment settings.
 
 ANCHORPT_REPO_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 

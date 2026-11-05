@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Convert RNA and ATAC Matrix Market inputs to the training AnnData object.
+# Prepare RNA–ATAC training input.
 set -euo pipefail
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/config.sh"
 

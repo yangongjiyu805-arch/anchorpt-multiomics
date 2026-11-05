@@ -1,80 +1,52 @@
-# Reproducibility and evaluation
+# Evaluation and reproducibility
 
-[Home](../README.md) · [Configuration](configuration.md) · [Data preparation](preprocessing.md)
+## Run records
 
-This guide defines the training records, embedding roles, and evaluation settings needed to compare AnchorPT experiments.
+Keep the commit, environment, input/annotation versions, splits, seeds, preprocessing arguments, `params.json`, training logs, and scores. Use disjoint cells for unpaired benchmarks and report label-based split stratification separately.
 
-## Included components
+Datasets, reference annotations, checkpoints, and benchmark result tables are not bundled.
 
-The repository provides preprocessing scripts, two training entry points, model and transport objectives, and embedding evaluation. Runnable workflow scripts are provided in [experiment/rna_atac/](../experiment/rna_atac/).
+## Embeddings
 
-Benchmark datasets, reference annotations, complete per-benchmark configurations, trained checkpoints, and reference score tables are supplied separately. Check environment compatibility as described in [installation](installation.md).
-
-Both training entry points and runner APIs default to 80 refinement epochs. Retain the complete experiment configuration, including dataset splits and preprocessing, with each run.
-
-## Preserve the experimental record
-
-For each run, keep:
-
-1. The repository commit, selected source tree, Python/package versions, and hardware.
-2. Raw-data and annotation versions/checksums, preprocessing arguments, and cell/feature order.
-3. Split assignments and seeds, including whether biological labels were used to stratify a split.
-4. The effective parameter JSON, training logs, and executed epoch counts.
-5. The integrated AnnData file, evaluation arguments, evaluation seed, and all metric outputs.
-
-Use disjoint cell allocations for an unpaired benchmark. Record this separately from whether the model uses cell-type labels. The bundled three-modality split constructor uses canonical cell types as one stratification field; the default model training remains label-free.
-
-## Embedding roles
-
-| AnnData key | Interpretation |
+| Key in `obsm` | Role |
 | :--- | :--- |
-| `obsm["latent_shared"]` | Primary integration embedding |
-| `obsm["latent_specific"]` | Modality-specific representation |
-| `obsm["latent_concat"]` | Concatenated diagnostic representation |
-| `obsm["latent_shared_stage1_anchor"]` | Stage-I reference, when available |
-| `obsm["latent_shared_stage2_raw"]` | Pre-blend Stage-II embedding, exported when blending is enabled |
+| `latent_shared` | Primary integration embedding |
+| `latent_specific` | Modality-specific factors |
+| `latent_concat` | Concatenated diagnostic |
+| `latent_shared_stage1_anchor` | Stage-I reference, when available |
+| `latent_shared_stage2_raw` | Pre-blend output when blending is enabled |
 
-The default `ANCHORPT_STAGE2_OUTPUT_BLEND=1.0` uses the refined encoder output directly. With a value below 1, the primary output is blended with the Stage-I reference.
+The default blend is 1.0; lower values mix Stage-II output with the Stage-I reference. The multimodal runner also exports CORAL diagnostics under `latent_shared_coral_avg_s055` (two modalities) or `latent_shared_coral_avg_s085` (three modalities). Use `latent_shared` for primary evaluation.
 
-The extended runner additionally exports a CORAL-based diagnostic representation under `latent_shared_coral_avg_s055` for two modalities or `latent_shared_coral_avg_s085` otherwise. Evaluate `latent_shared` for the primary analysis; choosing among diagnostic outputs using test labels would change the selection protocol.
+## Evaluation
 
-## Evaluation settings
+[Example command](quickstart.md#4-evaluate). Both runners use the same evaluator.
 
-Both source trees include the same evaluator implementation. The [quickstart](quickstart.md#4-evaluate) explicitly selects the primary shared embedding.
+| Option | Default |
+| :--- | :--- |
+| `--embedding-key` / `--label-key` | `latent_shared` / `cell_type` |
+| `--modality-key` / `--batch-key` | `modality` / `none` |
+| `--random-state` / `--ilisi-knn-m` | `0` / `90` |
+| `--pre-embedding-key` | Unset; PCA from `.X` |
+| `--min-max-scale` | Off |
+| `--format` | `tsv`; also CSV or JSON |
 
-| Option | Default | Effect |
-| :--- | :--- | :--- |
-| `--embedding-key` | `latent_shared` | Embedding to evaluate |
-| `--label-key` | `cell_type` | Biological labels |
-| `--modality-key` | `modality` | Modality identities |
-| `--batch-key` | `none` | Omit batch metrics unless a key is supplied |
-| `--pre-embedding-key` | Unset | Compute pre-integration PCA from `.X` when unset |
-| `--random-state` | `0` | PCA and approximate-neighbor seed |
-| `--ilisi-knn-m` | `90` | Modality iLISI neighborhood size |
-| `--min-max-scale` | Off | Optional scaling before aggregation |
-| `--format` | `tsv` | Also supports CSV and JSON |
-
-Only enable batch metrics when the batch variable is interpretable for the benchmark. A modality-confounded dataset identifier should not automatically be used as a batch key.
-
-The evaluator computes neighbor sets at sizes 15, 50, and 90, together with the requested modality-iLISI size. Inputs must contain enough cells for these neighborhood sizes.
+Enable batch metrics only for an interpretable nuisance variable. Inputs must support neighbor counts of 15, 50, 90, and the selected modality-iLISI count.
 
 ## Aggregate scores
 
-Let `Bio`, `Modality`, and `Batch` denote arithmetic means of the corresponding metric groups in the evaluator.
+Each group is an arithmetic mean:
 
-| Evaluation setting | Total |
+| Group | Metrics |
 | :--- | :--- |
-| With batch metrics | `0.4 × Bio + 0.3 × Modality + 0.3 × Batch` |
-| Without batch metrics | `0.6 × Bio + 0.4 × Modality` |
+| Bio | Isolated labels, Leiden NMI/ARI, label silhouette, cLISI |
+| Modality | Silhouette, iLISI, kBET, graph connectivity, PCR |
+| Batch | Silhouette, iLISI, kBET, PCR |
 
-The biological group includes isolated-label, Leiden NMI/ARI, label-silhouette, and cLISI metrics. The modality group includes modality silhouette, iLISI, kBET, graph connectivity, and PCR. The batch group includes batch silhouette, iLISI, kBET, and PCR.
+With batch metrics: `Total = 0.4 × Bio + 0.3 × Modality + 0.3 × Batch`.
 
-Leiden NMI and ARI are included in the biological-conservation mean and therefore contribute to Total.
+Without batch metrics: `Total = 0.6 × Bio + 0.4 × Modality`.
 
-## Missing metrics and repeated runs
+Leiden NMI/ARI contribute to Bio and Total. Failed metrics become missing values; warnings are suppressed, nonfinite outputs are omitted, and means use surviving metrics. Check that compared runs contain the same metric inventory.
 
-Metric failures are converted to missing values inside the benchmarker; the command-line wrapper suppresses warnings, and its output omits nonfinite scores. Group means can therefore use only the surviving metrics. A printed Total does not by itself establish that all constituent metrics succeeded.
-
-Inspect the metric-name inventory and confirm the same constituent metrics across runs and methods. Keep the scaling setting, evaluation seed, neighborhood sizes, preprocessing, and cell subset fixed for a controlled comparison.
-
-Training and evaluation use separate random seeds. Run multiple explicitly recorded training seeds, retain per-run scores, and report both the aggregation rule and variability. Fixed seeds do not guarantee bitwise equality across hardware and library versions.
+Keep evaluation settings and cell subsets fixed across methods. Training and evaluation seeds are separate; report per-run scores and variability across training seeds.

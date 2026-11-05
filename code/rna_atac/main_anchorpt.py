@@ -1,9 +1,4 @@
-"""Run AnchorPT from an environment-based experiment configuration.
-
-The entry point validates input and optimization settings, constructs the model
-runner, dispatches the requested training workflow, and exports embeddings with
-a complete record of the effective parameters.
-"""
+"""Run AnchorPT from an environment-based experiment configuration."""
 import json
 import os
 import re
@@ -17,7 +12,7 @@ import numpy as np
 import scanpy as sc
 import torch
 
-# Make the bundled package importable in direct and scheduled executions.
+# Import the bundled package.
 src_dir = os.environ.get("ANCHORPT_SRC_DIR", str(Path(__file__).resolve().parent))
 if src_dir not in sys.path:
     sys.path.insert(0, src_dir)
@@ -60,7 +55,7 @@ def main():
         print("Required: ANCHORPT_INPUT_H5AD and writable output paths.")
         return 0
 
-    # Read paths, data keys, architecture settings, and optimization controls.
+    # Read experiment settings.
     input_h5ad = _str_env("ANCHORPT_INPUT_H5AD")
     output_h5ad = _str_env("ANCHORPT_OUTPUT_H5AD", "output.h5ad")
     params_json = _str_env("ANCHORPT_PARAMS_USED_JSON", "params.json")
@@ -72,7 +67,7 @@ def main():
     distribution = _str_env("ANCHORPT_DISTRIBUTION", "Normal_positive")
     use_labels = _bool_env("ANCHORPT_USE_TRAINING_LABELS", False)
     strict_unpaired = _bool_env("ANCHORPT_STRICT_UNPAIRED", True)
-    # Keep the default workflow free of batch and biological-label supervision.
+    # Enforce label-free training.
     if strict_unpaired and (batch_key or celltype_key or use_labels):
         raise ValueError(
             "ANCHORPT_STRICT_UNPAIRED=true forbids batch_key, celltype_key, and training labels. "
@@ -135,13 +130,13 @@ def main():
     stage1_knn_graph_max_cells = _int_env("ANCHORPT_STAGE1_KNN_GRAPH_MAX_CELLS", 128)
     stage2_pivotal_anchor_warmup_epochs = _int_env("ANCHORPT_STAGE2_PIVOTAL_ANCHOR_WARMUP_EPOCHS", 5)
 
-    # Apply one seed across model initialization, data splitting, and anchor construction.
+    # Seed initialization, splits, and anchors.
     torch.manual_seed(seed)
     np.random.seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 
-    # Load the configured matrix before constructing and fitting the integration runner.
+    # Load training data.
     print(f"Loading data from {input_h5ad}")
     adata = sc.read_h5ad(input_h5ad)
     print(f"Data shape: {adata.shape}")

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run strict-unpaired, two-stage AnchorPT with an explicit training seed.
+# Train two-stage AnchorPT.
 set -euo pipefail
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/config.sh"
 
