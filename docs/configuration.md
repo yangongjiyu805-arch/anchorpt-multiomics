@@ -44,7 +44,7 @@ These are **released code defaults**, not a complete manuscript experiment speci
 | `ANCHORPT_SHARED_RECON_WEIGHT` | `1.0` |
 | `ANCHORPT_TRAINING_MODE` | `two_stage`; also accepts `base` |
 | `ANCHORPT_STAGE1_EPOCH_NUM` | `100`, inherited from `ANCHORPT_EPOCH_NUM` |
-| `ANCHORPT_STAGE2_EPOCH_NUM` | `40` |
+| `ANCHORPT_STAGE2_EPOCH_NUM` | `80` |
 | `ANCHORPT_BATCH_SIZE` | `128` |
 | `ANCHORPT_LR` | `7e-4` |
 | `ANCHORPT_STAGE2_LR` | `2e-4` |

@@ -272,7 +272,7 @@ class AnchorPTRunner:
     def train_two_stage(
         self,
         stage1_epoch_num=100,
-        stage2_epoch_num=40,
+        stage2_epoch_num=80,
         batch_size=128,
         lr=7e-4,
         stage2_lr=2e-4,

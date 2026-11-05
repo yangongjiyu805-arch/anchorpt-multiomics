@@ -159,7 +159,7 @@ def main():
 
     training_mode = _str_env("ANCHORPT_TRAINING_MODE", "two_stage").lower()
     stage1_epoch_num = _int_env("ANCHORPT_STAGE1_EPOCH_NUM", epoch_num)
-    stage2_epoch_num = _int_env("ANCHORPT_STAGE2_EPOCH_NUM", 40)
+    stage2_epoch_num = _int_env("ANCHORPT_STAGE2_EPOCH_NUM", 80)
     stage2_lr = _float_env("ANCHORPT_STAGE2_LR", 2e-4)
     stage2_base_weight = _float_env('ANCHORPT_STAGE2_BASE_WEIGHT', 1.0)
     stage2_output_blend = _float_env("ANCHORPT_STAGE2_OUTPUT_BLEND", 1.0)

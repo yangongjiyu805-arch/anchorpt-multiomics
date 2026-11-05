@@ -84,7 +84,7 @@ The two source trees retain their original entry points. Select the runner expli
 
 This repository contains source code and preprocessing utilities; benchmark datasets, annotation files, checkpoints, and numerical result tables are not bundled.
 
-The [reproducibility guide](docs/reproducibility.md) records the current code defaults, output conventions, and evaluation protocol. Exact manuscript reproduction requires the corresponding dataset splits and experiment configurations. In particular, the released entry points default to **40 refinement epochs**; this differs from the **80 epochs** described in the current manuscript.
+The [reproducibility guide](docs/reproducibility.md) records the current code defaults, output conventions, and evaluation protocol. Both training entry points default to **80 refinement epochs**, matching the current manuscript. Exact manuscript reproduction also requires the corresponding dataset splits and experiment configurations.
 
 ## Questions and contributions
 

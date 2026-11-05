@@ -10,7 +10,7 @@ Included: preprocessing scripts, two training entry points, model and transport 
 
 Not bundled: benchmark datasets, reference annotations, exact per-benchmark run configurations, trained checkpoints, or reference score tables. The dependency snapshot has not been validated here through a fresh installation and end-to-end run.
 
-The current manuscript describes 80 refinement epochs, whereas both released entry points default to 40. Other coefficients use implementation-specific names. Recover and reconcile the complete experiment configuration before claiming an exact manuscript reproduction; changing the epoch count alone is insufficient.
+Both training entry points and runner APIs default to 80 refinement epochs, matching the current manuscript. Coefficients use implementation-specific names; retain the complete experiment configuration, including dataset splits and preprocessing, when reproducing manuscript results.
 
 ## Preserve the experimental record
 
