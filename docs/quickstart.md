@@ -21,7 +21,7 @@ Each assay directory must contain `matrix.mtx`, `features.tsv`, and `barcodes.ts
 ## 2. Build the training AnnData object
 
 ```bash
-python pre_data/prepare_gxr_gtf_rna_atac.py \
+python code/preprocessing/prepare_gxr_gtf_rna_atac.py \
   --rna-dir "$RNA_DIR" \
   --atac-dir "$ATAC_DIR" \
   --route gtf \
@@ -56,7 +56,7 @@ export ANCHORPT_USE_TRAINING_LABELS=false
 export ANCHORPT_BATCH_KEY=""
 export ANCHORPT_CELLTYPE_KEY=""
 
-python src/main_anchorpt.py
+python code/rna_atac/main_anchorpt.py
 ```
 
 The example explicitly sets the released training defaults. For a manuscript experiment, use its full configuration rather than changing only the epoch count.
@@ -66,7 +66,7 @@ Training uses modality identities, but does not use cell-type or batch-label sup
 ## 4. Evaluate
 
 ```bash
-python src/evaluate_metrics.py \
+python code/rna_atac/evaluate_metrics.py \
   --input results/rna-atac/result.h5ad \
   --embedding-key latent_shared \
   --label-key cell_type \

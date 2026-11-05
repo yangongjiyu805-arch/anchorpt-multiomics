@@ -8,8 +8,8 @@ The training scripts use `ANCHORPT_*` environment variables. Their `--help` outp
 
 | Workflow | Entry point | Explicit source directory |
 | :--- | :--- | :--- |
-| RNA–ATAC | [src/main_anchorpt.py](../src/main_anchorpt.py) | `$PWD/src` |
-| RNA–protein or assembled three-modality data | [extended main_anchorpt.py](../src_rna_adt_three_omics/main_anchorpt.py) | `$PWD/src_rna_adt_three_omics` |
+| RNA–ATAC | [code/rna_atac/main_anchorpt.py](../code/rna_atac/main_anchorpt.py) | `$PWD/code/rna_atac` |
+| RNA–protein or assembled three-modality data | [extended main_anchorpt.py](../code/multimodal/main_anchorpt.py) | `$PWD/code/multimodal` |
 
 Both trees contain a package named `anchorpt`. Set `ANCHORPT_SRC_DIR` to the selected tree and run each experiment in a fresh Python process, so the intended runner is imported.
 
@@ -102,7 +102,7 @@ export ANCHORPT_USE_TRAINING_LABELS=false
 export ANCHORPT_BATCH_KEY=""
 export ANCHORPT_CELLTYPE_KEY=""
 
-python src_rna_adt_three_omics/main_anchorpt.py
+python code/multimodal/main_anchorpt.py
 ```
 
 For three modalities, provide an assembled AnnData object with the same contract. Enable feature masks only when its `uns["feature_list"]` is correctly populated.

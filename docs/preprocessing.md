@@ -25,7 +25,7 @@ When `ANCHORPT_USE_FEATURE_MASK=true`, `uns["feature_list"]` must be a dictionar
 
 ## RNA–ATAC from Matrix Market
 
-Script: [prepare_gxr_gtf_rna_atac.py](../pre_data/prepare_gxr_gtf_rna_atac.py).
+Script: [prepare_gxr_gtf_rna_atac.py](../code/preprocessing/prepare_gxr_gtf_rna_atac.py).
 
 Each input directory contains:
 
@@ -46,7 +46,7 @@ RNA gene identifiers, ATAC peak coordinates, and the gene–region mapping or an
 **Gene–region mapping route:**
 
 ```bash
-python pre_data/prepare_gxr_gtf_rna_atac.py \
+python code/preprocessing/prepare_gxr_gtf_rna_atac.py \
   --rna-dir /path/to/rna \
   --atac-dir /path/to/atac \
   --route gxr \
@@ -59,10 +59,10 @@ The mapping CSV must contain `peak` and `gene.name` columns, matching the ATAC f
 
 ## RNA–ATAC from AnnData
 
-Script: [prepare_h5ad_gtf_rna_atac.py](../pre_data/prepare_h5ad_gtf_rna_atac.py).
+Script: [prepare_h5ad_gtf_rna_atac.py](../code/preprocessing/prepare_h5ad_gtf_rna_atac.py).
 
 ```bash
-python pre_data/prepare_h5ad_gtf_rna_atac.py \
+python code/preprocessing/prepare_h5ad_gtf_rna_atac.py \
   --rna-h5ad /path/to/rna.h5ad \
   --atac-h5ad /path/to/atac.h5ad \
   --gtf /path/to/annotation.gtf \
@@ -76,10 +76,10 @@ This route expects count layers and uses the companion Matrix Market preprocesso
 
 ## RNA–protein
 
-Script: [prepare_h5ad_hgnc_rna_protein.py](../pre_data/prepare_h5ad_hgnc_rna_protein.py).
+Script: [prepare_h5ad_hgnc_rna_protein.py](../code/preprocessing/prepare_h5ad_hgnc_rna_protein.py).
 
 ```bash
-python pre_data/prepare_h5ad_hgnc_rna_protein.py \
+python code/preprocessing/prepare_h5ad_hgnc_rna_protein.py \
   --rna-h5ad /path/to/rna.h5ad \
   --protein-h5ad /path/to/protein.h5ad \
   --hgnc-json /path/to/hgnc_complete_set.json \
@@ -95,10 +95,10 @@ The example uses the strict `error` policy for ambiguous mappings. The script de
 
 ## Three-modality unpaired splitting
 
-Script: [prepare_tripbmc_unpaired_split.py](../pre_data/prepare_tripbmc_unpaired_split.py).
+Script: [prepare_tripbmc_unpaired_split.py](../code/preprocessing/prepare_tripbmc_unpaired_split.py).
 
 ```bash
-python pre_data/prepare_tripbmc_unpaired_split.py \
+python code/preprocessing/prepare_tripbmc_unpaired_split.py \
   --source-root /path/to/tripbmc/source \
   --output-dir data/processed/tripbmc_split \
   --seed 42

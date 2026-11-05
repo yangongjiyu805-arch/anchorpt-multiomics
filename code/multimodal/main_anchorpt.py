@@ -17,7 +17,7 @@ import scanpy as sc
 import torch
 
 # Make the bundled package importable in direct and scheduled executions.
-src_dir = os.environ.get("ANCHORPT_SRC_DIR", str(Path(__file__).parents[2]))
+src_dir = os.environ.get("ANCHORPT_SRC_DIR", str(Path(__file__).resolve().parent))
 if src_dir not in sys.path:
     sys.path.insert(0, src_dir)
 

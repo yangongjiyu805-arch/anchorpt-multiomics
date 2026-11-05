@@ -44,9 +44,9 @@ print("CUDA available:", torch.cuda.is_available())
 print("NumPy bridge:", torch.from_numpy(np.zeros((2, 2), dtype=np.float32)).shape)
 PY
 
-python src/main_anchorpt.py --help
-python src/evaluate_metrics.py --help
-python pre_data/prepare_gxr_gtf_rna_atac.py --help
+python code/rna_atac/main_anchorpt.py --help
+python code/rna_atac/evaluate_metrics.py --help
+python code/preprocessing/prepare_gxr_gtf_rna_atac.py --help
 ```
 
 An import check verifies dependencies and entry points, not training correctness or benchmark scores. The GTF preprocessing route also calls `episcanpy`; check it with your actual annotation and peak format.

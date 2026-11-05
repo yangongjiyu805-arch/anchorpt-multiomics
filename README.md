@@ -29,10 +29,10 @@ The code release includes preprocessing, two-stage training, and embedding evalu
 
 | Your input | Preparation | Training entry point |
 | :--- | :--- | :--- |
-| RNA and ATAC count matrices | [Matrix Market + GTF or gene–region mapping](docs/preprocessing.md#rnaatac-from-matrix-market) | `src/main_anchorpt.py` |
-| RNA and ATAC AnnData files | [AnnData + GTF](docs/preprocessing.md#rnaatac-from-anndata) | `src/main_anchorpt.py` |
-| RNA and protein AnnData files | [HGNC-based feature mapping](docs/preprocessing.md#rnaprotein) | `src_rna_adt_three_omics/main_anchorpt.py` |
-| An assembled three-modality AnnData object | [Input contract and feature masks](docs/preprocessing.md#training-input-contract) | `src_rna_adt_three_omics/main_anchorpt.py` |
+| RNA and ATAC count matrices | [Matrix Market + GTF or gene–region mapping](docs/preprocessing.md#rnaatac-from-matrix-market) | `code/rna_atac/main_anchorpt.py` |
+| RNA and ATAC AnnData files | [AnnData + GTF](docs/preprocessing.md#rnaatac-from-anndata) | `code/rna_atac/main_anchorpt.py` |
+| RNA and protein AnnData files | [HGNC-based feature mapping](docs/preprocessing.md#rnaprotein) | `code/multimodal/main_anchorpt.py` |
+| An assembled three-modality AnnData object | [Input contract and feature masks](docs/preprocessing.md#training-input-contract) | `code/multimodal/main_anchorpt.py` |
 
 **First run:** follow the [RNA–ATAC quickstart](docs/quickstart.md) from preprocessing through evaluation. Commands use Bash and run from the repository root. The pinned dependency file targets CUDA 12.1 PyTorch; see the [installation notes](docs/installation.md).
 
@@ -56,24 +56,27 @@ anchorpt-multiomics/
 ├── README.md
 ├── LICENSE
 ├── requirements.txt
-├── docs/
+├── code/                           # Implementation and executable entry points
+│   ├── README.md                   # Workflow selection
+│   ├── preprocessing/              # Matrix/AnnData preparation and splitting
+│   ├── rna_atac/                   # RNA–ATAC workflow
+│   │   ├── main_anchorpt.py
+│   │   ├── evaluate_metrics.py
+│   │   └── anchorpt/               # Model, objectives, training, and runner
+│   └── multimodal/                 # RNA–protein and three-modality workflow
+│       ├── main_anchorpt.py
+│       ├── evaluate_metrics.py
+│       └── anchorpt/
+├── docs/                           # Installation, tutorials, and experiment protocol
 │   ├── installation.md
 │   ├── quickstart.md
 │   ├── preprocessing.md
 │   ├── configuration.md
 │   └── reproducibility.md
-├── pre_data/                       # Input preparation and unpaired splitting
-├── src/                            # RNA–ATAC workflow
-│   ├── main_anchorpt.py
-│   ├── evaluate_metrics.py
-│   └── anchorpt/                   # Model, objectives, training, and runner
-└── src_rna_adt_three_omics/          # Extended two-/three-modality workflow
-    ├── main_anchorpt.py
-    ├── evaluate_metrics.py
-    └── anchorpt/
+└── .github/ISSUE_TEMPLATE/          # Structured issue reporting
 ```
 
-The two source trees retain their original entry points. Select the runner explicitly as described in [configuration](docs/configuration.md#selecting-the-runner).
+All executable code lives under [`code/`](code/README.md). The two workflow directories each bundle their own `anchorpt` package. Select the runner explicitly as described in [configuration](docs/configuration.md#selecting-the-runner).
 
 ## Reproducing experiments
 
